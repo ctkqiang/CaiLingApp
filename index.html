@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="财领 - 智能财务管理应用" />
+    <title>财领记账 - 智能财务管理</title>
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+    <style>
+      :root {
+        --neon-pink: #ff2e63;
+        --cyber-purple: #6c63ff;
+        --dark-bg: #0a0a12;
+        --glass-bg: rgba(255, 255, 255, 0.05);
+        --gradient-accent: linear-gradient(
+          45deg,
+          var(--neon-pink),
+          var(--cyber-purple)
+        );
+      }
+
+      body {
+        background: var(--dark-bg);
+        color: white;
+        font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+        line-height: 1.7;
+      }
+
+      .hero {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        padding: 0 10%;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .hero::after {
+        content: "";
+        position: absolute;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(
+          circle at 50% 50%,
+          rgba(255, 46, 99, 0.1) 0%,
+          transparent 60%
+        );
+        animation: pulse 8s infinite linear;
+      }
+
+      .hero-content {
+        position: relative;
+        z-index: 2;
+        max-width: 600px;
+      }
+
+      .hero-content h1 {
+        font-size: 4.5rem;
+        background: linear-gradient(45deg, #fff, var(--neon-pink));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        line-height: 1.1;
+        margin-bottom: 2rem;
+        text-shadow: 0 0 30px rgba(255, 46, 99, 0.3);
+      }
+
+      /* Phone mockup styles - completely revised */
+      .phone-mockup {
+        position: relative;
+        width: 320px;
+        height: 640px;
+        margin-left: 10%;
+      }
+
+      .phone-frame {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        border-radius: 40px;
+        border: 8px solid #111;
+        overflow: hidden;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        background: #000;
+      }
+
+      /* Camera dot */
+      .phone-frame::before {
+        content: "";
+        position: absolute;
+        width: 6px;
+        height: 6px;
+        background: #333;
+        border-radius: 50%;
+        top: 12px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 10;
+      }
+
+      .slideshow {
+        width: 100%;
+        height: 100%;
+        position: relative;
+        background: #fff;
+      }
+
+      .slideshow img {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        opacity: 0;
+        transition: opacity 0.8s ease;
+      }
+
+      .slideshow img.active {
+        opacity: 1;
+        z-index: 2;
+      }
+
+      /* Mobile-specific styles */
+      @media (max-width: 768px) {
+        .hero {
+          flex-direction: column;
+          text-align: center;
+          padding: 6rem 5%;
+        }
+
+        .phone-mockup {
+          width: 280px;
+          height: 560px;
+          margin: 3rem auto 0;
+        }
+
+        .phone-frame {
+          border-width: 6px;
+          border-radius: 30px;
+        }
+
+        .phone-frame::before {
+          width: 5px;
+          height: 5px;
+          top: 8px;
+        }
+      }
+
+      .phone-frame:hover {
+        transform: rotateY(0deg) rotateX(0deg);
+      }
+
+      .slideshow img.active {
+        opacity: 1;
+        z-index: 2;
+      }
+
+      .features {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+        padding: 8rem 10%;
+        background: linear-gradient(to bottom, var(--dark-bg), #120f1a);
+      }
+
+      .feature {
+        background: var(--glass-bg);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 24px;
+        padding: 2.5rem;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .feature:hover {
+        transform: translateY(-10px) rotateX(2deg) rotateY(2deg);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        border-color: rgba(255, 255, 255, 0.2);
+      }
+
+      .feature::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 50%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.1),
+          transparent
+        );
+        transition: 0.8s;
+      }
+
+      .feature:hover::before {
+        left: 100%;
+      }
+
+      .download-section {
+        text-align: center;
+        padding: 8rem 10%;
+        background: linear-gradient(to top, var(--dark-bg), #120f1a);
+      }
+
+      .download-btn {
+        display: inline-flex;
+        align-items: center;
+        padding: 1.2rem 2.5rem;
+        font-size: 1.1rem;
+        background: var(--gradient-accent);
+        color: white;
+        border-radius: 50px;
+        text-decoration: none;
+        transition: transform 0.3s, box-shadow 0.3s;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .download-btn::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.2),
+          transparent
+        );
+        transition: 0.5s;
+      }
+
+      .download-btn:hover::after {
+        left: 100%;
+      }
+
+      @keyframes pulse {
+        0% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.2);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+
+      @media (max-width: 768px) {
+        .hero {
+          flex-direction: column;
+          text-align: center;
+          padding: 6rem 5%;
+        }
+
+        .phone-mockup {
+          margin: 3rem auto 0;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- Hero section -->
+    <section class="hero" data-aos="fade-up">
+      <div class="hero-content">
+        <h1>财玲记账</h1>
+        <p data-aos="fade-up" data-aos-delay="200">智能财务管理，尽在掌握</p>
+        <!-- 新增营销标语 -->
+        <div class="slogan" data-aos="fade-up" data-aos-delay="400">
+          <span class="gradient-text">理财不等人，财富自己追！</span>
+          <div class="sub-slogan">开启您的智能财富之旅</div>
+        </div>
+      </div>
+      <div class="phone-mockup" data-aos="zoom-in" data-aos-delay="400">
+        <div class="phone-frame">
+          <div class="slideshow">
+            <img
+              src="screenshots/screen1.png"
+              class="active"
+              alt="App screenshot"
+            />
+            <img src="screenshots/screen2.png" alt="App screenshot" />
+            <img src="screenshots/screen3.png" alt="App screenshot" />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Features section -->
+    <section class="features">
+      <!-- Keep existing feature divs with SVGs -->
+      <div class="feature">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="#ff8ba7"
+          width="60"
+          height="60"
+          style="margin-bottom: 20px"
+        >
+          <path
+            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1.41 16.09V20h-2.67v-1.93c-1.71-.36-3.16-1.46-3.27-3.4h1.96c.1 1.05.82 1.87 2.65 1.87 1.96 0 2.4-.98 2.4-1.59 0-.83-.44-1.61-2.67-2.14-2.48-.6-4.18-1.62-4.18-3.67 0-1.72 1.39-2.84 3.11-3.21V4h2.67v1.95c1.86.45 2.79 1.86 2.85 3.39H14.3c-.05-1.11-.64-1.87-2.22-1.87-1.5 0-2.4.68-2.4 1.64 0 .84.65 1.39 2.67 1.91s4.18 1.39 4.18 3.91c-.01 1.83-1.38 2.83-3.12 3.16z"
+          />
+        </svg>
+        <h3>支出追踪</h3>
+        <p>轻松记录每日收支，详细分类管理</p>
+      </div>
+      <div class="feature">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="#ff8ba7"
+          width="60"
+          height="60"
+          style="margin-bottom: 20px"
+        >
+          <path
+            d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"
+          />
+        </svg>
+        <h3>财务分析</h3>
+        <p>全面了解支出模式，掌握财务健康状况</p>
+      </div>
+      <div class="feature">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="#ff8ba7"
+          width="60"
+          height="60"
+          style="margin-bottom: 20px"
+        >
+          <path
+            d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"
+          />
+        </svg>
+        <h3>数据安全</h3>
+        <p>银行级加密保护，确保财务隐私安全</p>
+      </div>
+      <div class="feature">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="#ff8ba7"
+          width="60"
+          height="60"
+          style="margin-bottom: 20px"
+        >
+          <path
+            d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-5h2v5zm4 0h-2V7h2v10zm4 0h-2v-3h2v3z"
+          />
+        </svg>
+        <h3>智能报告</h3>
+        <p>自动生成月度财务分析报告</p>
+      </div>
+
+      <div class="feature">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="#ff8ba7"
+          width="60"
+          height="60"
+          style="margin-bottom: 20px"
+        >
+          <path
+            d="M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"
+          />
+        </svg>
+        <h3>智能预算</h3>
+        <p>设置预算目标，及时提醒超支情况</p>
+      </div>
+    </section>
+
+    <!-- Download section -->
+    <section class="download-section">
+      <h2 data-aos="fade-up">立即下载</h2>
+      <p data-aos="fade-up" data-aos-delay="200">开始智能管理您的财务</p>
+      <div class="download-buttons">
+        <a
+          href="#"
+          class="download-btn android"
+          data-aos="zoom-in"
+          data-aos-delay="400"
+        >
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            style="margin-right: 12px"
+          >
+            <path
+              fill="currentColor"
+              d="M17.6 9.48l1.84-3.18c.16-.31.04-.69-.26-.85-.29-.15-.65-.06-.83.19l-1.88 3.24c-2.86-1.13-6.08-1.13-8.94 0L5.65 5.64c-.19-.25-.55-.34-.84-.19-.3.16-.42.54-.25.85L6.4 9.48C3.3 11.09 1.71 14.24 2.07 17.5H22c.36-3.26-1.24-6.41-4.4-8.02zM7 15.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm10 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z"
+            />
+          </svg>
+          安卓版下载
+        </a>
+        <br />
+        <br />
+        <a
+          href="#"
+          class="download-btn ios"
+          data-aos="zoom-in"
+          data-aos-delay="600"
+        >
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            style="margin-right: 12px"
+          >
+            <path
+              fill="currentColor"
+              d="M18.71 19.5C17.88 20.74 17 19.5 17 19.5s.03-1.51.84-2.65c.94-1.25 1.65-1.85 1.65-1.85s-.88.64-1.31 2.15c-.28.93-.22 2.35-.47 3.35zM12 2.5c-.27 0-.5.23-.5.5 0 .14.06.26.15.35.09.09.21.15.35.15.28 0 .5-.22.5-.5 0-.14-.06-.26-.15-.35-.09-.09-.21-.15-.35-.15zm7.12 5.22l-3.75-2.53c-.28-.19-.62-.23-.93-.12 0 0-.01 0-.02.01-.03.01-.07.02-.12.04-.09.03-.2.08-.32.16-.23.15-.49.38-.74.66-.03.04-.07.07-.1.11-.32.36-.65.82-.94 1.35-.47.87-.77 1.73-.9 2.15.86.31 2.14 1.06 3.28 2.23 1.29 1.32 2.08 2.89 2.18 3.63.04.32.35.57.69.57h.01c.38 0 .69-.31.69-.69 0-2.71-1.44-5.45-4.07-7.35z"
+            />
+          </svg>
+          iOS版下载
+        </a>
+      </div>
+    </section>
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+      // Enhanced AOS config
+      AOS.init({
+        duration: 800,
+        once: true,
+        mirror: false,
+        anchorPlacement: "top-bottom"
+      });
+
+      // Enhanced slideshow logic with overlap prevention
+      let slideIndex = 0;
+      const slides = document.querySelectorAll(".slideshow img");
+
+      function cycleSlides() {
+        // Fade out current slide first
+        slides[slideIndex].classList.remove("active");
+
+        // Calculate next index after transition completes
+        setTimeout(() => {
+          slideIndex = (slideIndex + 1) % slides.length;
+          slides[slideIndex].classList.add("active");
+        }, 800); // Match transition duration
+      }
+
+      // Initialize with first slide active
+      slides[slideIndex].classList.add("active");
+      setInterval(cycleSlides, 5000); // 5 seconds per slide
+
+      // Feature card interactions
+      document.querySelectorAll(".feature").forEach((feature) => {
+        feature.addEventListener("mousemove", (e) => {
+          const rect = feature.getBoundingClientRect();
+          const x = (e.clientX - rect.left) / feature.offsetWidth - 0.5;
+          const y = (e.clientY - rect.top) / feature.offsetHeight - 0.5;
+
+          feature.style.transform = `translateY(-10px) 
+            rotateX(${y * 4}deg) 
+            rotateY(${x * 4}deg) 
+            perspective(1000px)`;
+        });
+
+        feature.addEventListener("mouseleave", () => {
+          feature.style.transform = "translateY(0)";
+        });
+      });
+    </script>
+  </body>
+</html>
