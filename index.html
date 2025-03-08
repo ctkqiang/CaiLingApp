@@ -390,11 +390,15 @@
       <h2 data-aos="fade-up">立即下载</h2>
       <p data-aos="fade-up" data-aos-delay="200">开始智能管理您的财务</p>
       <div class="download-buttons">
+        <!-- Existing Android APK button -->
+
         <a
-          href="#"
+          href="app-files/财玲记账-app-release.apk"
           class="download-btn android"
           data-aos="zoom-in"
           data-aos-delay="400"
+          id="android-download-btn"
+          data-default-apk="财玲记账-app-release.apk"
         >
           <svg
             width="24"
@@ -409,8 +413,33 @@
           </svg>
           安卓版下载
         </a>
-        <br />
-        <br />
+        <br /><br />
+
+        <!-- New Google Play button -->
+        <a
+          href="https://play.google.com/store/apps/details?id=com.yourcompany.app"
+          class="download-btn google-play"
+          data-aos="zoom-in"
+          data-aos-delay="500"
+          target="_blank"
+          rel="noopener"
+        >
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            style="margin-right: 12px"
+          >
+            <path
+              fill="currentColor"
+              d="M3 20.5v-17c0-.58.47-1 1.03-1h15.95c.45 0 .85.3.96.74l-8.3 8.3-8.64 8.64zm.3-16.4L14.6 12 3.3 20.4c-.08-.24-.3-.4-.56-.4H3V4.5c0-.27.23-.5.5-.5h.24c.04 0 .07 0 .1.02zM20.7 4.1c.2.2.34.45.4.72l-6.56 6.57-2.53 2.51 6.57 6.57c-.27.06-.54.2-.74.4-.4.4-.6.95-.6 1.55v.14H6.86L14.6 12 7.3 4.7h12.8c.6 0 1.15.2 1.55.6zm-.74 1.42c.05.05.08.1.12.16L16.4 12l4.7 6.7c-.04.06-.07.11-.12.16-.2.2-.45.34-.72.4L15 12l6.23-6.23c.27.06.52.2.72.4z"
+            />
+          </svg>
+          Google Play
+        </a>
+        <br /><br />
+
+        <!-- Existing iOS button -->
         <a
           href="#"
           class="download-btn ios"
@@ -443,40 +472,66 @@
         anchorPlacement: "top-bottom"
       });
 
-      // Enhanced slideshow logic with overlap prevention
+      // Slideshow logic
       let slideIndex = 0;
       const slides = document.querySelectorAll(".slideshow img");
 
       function cycleSlides() {
-        // Fade out current slide first
         slides[slideIndex].classList.remove("active");
-
-        // Calculate next index after transition completes
         setTimeout(() => {
           slideIndex = (slideIndex + 1) % slides.length;
           slides[slideIndex].classList.add("active");
-        }, 800); // Match transition duration
+        }, 800);
       }
 
-      // Initialize with first slide active
+      // Initialize slideshow
       slides[slideIndex].classList.add("active");
-      setInterval(cycleSlides, 5000); // 5 seconds per slide
+      setInterval(cycleSlides, 5000);
 
-      // Feature card interactions
-      document.querySelectorAll(".feature").forEach((feature) => {
-        feature.addEventListener("mousemove", (e) => {
-          const rect = feature.getBoundingClientRect();
-          const x = (e.clientX - rect.left) / feature.offsetWidth - 0.5;
-          const y = (e.clientY - rect.top) / feature.offsetHeight - 0.5;
+      // Device detection logic (fixed placement)
+      document.addEventListener("DOMContentLoaded", function () {
+        const androidBtn = document.getElementById("android-download-btn");
 
-          feature.style.transform = `translateY(-10px) 
-            rotateX(${y * 4}deg) 
-            rotateY(${x * 4}deg) 
-            perspective(1000px)`;
-        });
+        if (androidBtn && /Android/i.test(navigator.userAgent)) {
+          const getArchitecture = () => {
+            const ua = navigator.userAgent;
+            if (ua.includes("x86_64")) return "x86_64";
+            if (ua.includes("armv8") || ua.includes("aarch64"))
+              return "arm64-v8a";
+            if (ua.includes("armv7")) return "armeabi-v7a";
+            return "default";
+          };
 
-        feature.addEventListener("mouseleave", () => {
-          feature.style.transform = "translateY(0)";
+          const arch = getArchitecture();
+          const apkFiles = {
+            x86_64: "财玲记账-app-x86_64-release.apk",
+            "arm64-v8a": "财玲记账-arm64-v8a-release.apk",
+            "armeabi-v7a": "财玲记账-armeabi-v7a-release.apk",
+            default: androidBtn.dataset.defaultApk
+          };
+
+          androidBtn.href = `app-files/${apkFiles[arch]}`;
+          console.log(
+            `Detected architecture: ${arch}, using APK: ${apkFiles[arch]}`
+          );
+        }
+
+        // Feature card interactions
+        document.querySelectorAll(".feature").forEach((feature) => {
+          feature.addEventListener("mousemove", (e) => {
+            const rect = feature.getBoundingClientRect();
+            const x = (e.clientX - rect.left) / feature.offsetWidth - 0.5;
+            const y = (e.clientY - rect.top) / feature.offsetHeight - 0.5;
+
+            feature.style.transform = `translateY(-10px)
+              rotateX(${y * 4}deg)
+              rotateY(${x * 4}deg)
+              perspective(1000px)`;
+          });
+
+          feature.addEventListener("mouseleave", () => {
+            feature.style.transform = "translateY(0)";
+          });
         });
       });
     </script>
